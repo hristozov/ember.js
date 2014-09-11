@@ -3,9 +3,9 @@ import { Renderer } from "ember-metal-views";
 var renderer;
 
 function MetalRenderer () {
-  MetalRenderer.super.call(this);
+  MetalRenderer._super.call(this);
 }
-MetalRenderer.super = Renderer;
+MetalRenderer._super = Renderer;
 MetalRenderer.prototype = Object.create(Renderer.prototype, {
   constructor: {
     value: MetalRenderer,
