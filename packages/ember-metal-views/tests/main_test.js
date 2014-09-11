@@ -1,6 +1,4 @@
-/*globals HTMLElement */
-
-import { testsFor, equalHTML, appendTo } from "ember-metal-views/tests/test_helpers";
+import { testsFor, setElementText, equalHTML, appendTo } from "ember-metal-views/tests/test_helpers";
 
 var view;
 
@@ -87,9 +85,9 @@ test("willInsertElement hook", function() {
     isView: true,
 
     willInsertElement: function(el) {
-      ok(this.element instanceof HTMLElement, "We have an element");
+      ok(this.element && this.element.nodeType === 1, "We have an element");
       equal(this.element.parentElement, null, "The element is parentless");
-      this.element.textContent = 'you gone and done inserted that element';
+      setElementText(this.element, 'you gone and done inserted that element');
     }
   };
 
@@ -105,9 +103,9 @@ test("didInsertElement hook", function() {
     isView: true,
 
     didInsertElement: function() {
-      ok(this.element instanceof HTMLElement, "We have an element");
+      ok(this.element && this.element.nodeType === 1, "We have an element");
       equal(this.element.parentElement, document.getElementById('qunit-fixture'), "The element's parent is correct");
-      this.element.textContent = 'you gone and done inserted that element';
+      setElementText(this.element, 'you gone and done inserted that element');
     }
   };
 
