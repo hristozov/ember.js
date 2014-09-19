@@ -2,6 +2,7 @@ import { get } from "ember-metal/property_get";
 import run from "ember-metal/run_loop";
 import EmberView from "ember-views/views/view";
 import ContainerView from "ember-views/views/container_view";
+import { equalHTML } from "ember-metal-views/tests/test_helpers";
 
 var view;
 
@@ -66,7 +67,7 @@ test("calls render and parses the buffer string in the right context", function(
 
   var elem = get(view, 'element');
   ok(elem, 'has element now');
-  equal(elem.innerHTML, '<script></script><tr><td>snorfblax</td></tr>', 'has innerHTML from context');
+  equalHTML(elem.childNodes, '<script></script><tr><td>snorfblax</td></tr>', 'has innerHTML from context');
   equal(elem.tagName.toString().toLowerCase(), 'table', 'has tagName from view');
 });
 
@@ -97,7 +98,7 @@ test("does not wrap many tr children in tbody elements", function() {
 
   var elem = get(view, 'element');
   ok(elem, 'has element now');
-  equal(elem.innerHTML, '<script></script><tr><td>snorfblax</td></tr><script></script><tr><td>snorfblax</td></tr>', 'has innerHTML from context');
+  equalHTML(elem.childNodes, '<script></script><tr><td>snorfblax</td></tr><script></script><tr><td>snorfblax</td></tr>', 'has innerHTML from context');
   equal(elem.tagName.toString().toLowerCase(), 'table', 'has tagName from view');
 });
 

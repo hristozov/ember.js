@@ -3,7 +3,6 @@
 @submodule ember-views
 */
 
-import { setInnerHTML } from "ember-views/system/utils";
 import jQuery from "ember-views/system/jquery";
 import {DOMHelper} from "morph";
 import Ember from "ember-metal/core";
@@ -504,18 +503,22 @@ _RenderBuffer.prototype = {
     }
     var html = this.innerString();
 
+    var nodes;
     if (this._element) {
       if (html) {
-        this._element = setInnerHTML(this._element, html);
+        nodes = this.dom.parseHTML(html, this._element);
+        while (nodes[0]) {
+          this._element.appendChild(nodes[0]);
+        }
         this.hydrateMorphs();
       }
     } else {
       if (html) {
         var omittedStartTag = detectOmittedStartTag(html, this._contextualElement);
-        var parsed = this.dom.parseHTML(html, omittedStartTag || this._contextualElement);
+        nodes = this.dom.parseHTML(html, omittedStartTag || this._contextualElement);
         var frag = this._element = document.createDocumentFragment();
-        for (var i=0,l=parsed.length; i<l; i++) {
-          frag.appendChild(parsed[0]); // As nodes are appended they are removed from the node list
+        while (nodes[0]) {
+          frag.appendChild(nodes[0]);
         }
         this.hydrateMorphs();
       } else if (html === '') {

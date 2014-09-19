@@ -20,12 +20,12 @@ MetalRenderer.prototype.childViews = function (view) {
 };
 MetalRenderer.prototype.willCreateElement = function(view) {
 };
-MetalRenderer.prototype.createElement = function (view) {
+MetalRenderer.prototype.createElement = function (view, contextualElement) {
   var el;
   if (view.element) {
     el = view.element;
   } else {
-    el = view.element = document.createElement(view.tagName || 'div');
+    el = view.element = this._dom.createElement(view.tagName || 'div');
   }
   var classNames = view.classNames;
   if (typeof classNames === 'string') {
@@ -50,7 +50,10 @@ MetalRenderer.prototype.createElement = function (view) {
   } else if (view.textContent) {
     setElementText(el, view.textContent);
   } else if (view.innerHTML) {
-    el.innerHTML = view.innerHTML;
+    var nodes = this._dom.parseHTML(view.innerHTML, el);
+    while (nodes[0]) {
+      el.appendChild(nodes[0]);
+    }
   }
   return el;
 };
@@ -102,7 +105,15 @@ export function equalHTML(element, expectedHTML, message) {
   if (typeof element === 'string') {
     html = document.getElementById(element).innerHTML;
   } else {
-    html = element.outerHTML;
+    if (element instanceof window.NodeList) {
+      var fragment = document.createElement('div');
+      while (element[0]) {
+        fragment.appendChild(element[0]);
+      }
+      html = fragment.innerHTML;
+    } else {
+      html = element.outerHTML;
+    }
   }
 
   var actualHTML = html.replace(/ id="[^"]+"/gmi, '');
