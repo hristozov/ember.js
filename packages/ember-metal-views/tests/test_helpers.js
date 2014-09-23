@@ -46,7 +46,7 @@ MetalRenderer.prototype.createElement = function (view, contextualElement) {
     }
   }
   if (view.childViews) {
-    view._childViewsMorph = this._dom.createMorph(el, null, null, el);
+    view._childViewsMorph = this._dom.createMorph(el, null, null);
   } else if (view.textContent) {
     setElementText(el, view.textContent);
   } else if (view.innerHTML) {
@@ -92,13 +92,17 @@ export function subject() {
 }
 
 var supportsTextContent = ('textContent' in document.createElement('div'));
-export function setElementText(element, text) {
-  if (supportsTextContent) {
+var setElementText;
+if (supportsTextContent) {
+  setElementText = function setElementText(element, text) {
     element.textContent = text;
-  } else {
+  };
+} else {
+  setElementText = function setElementText(element, text) {
     element.innerText = text;
-  }
+  };
 }
+export {setElementText};
 
 export function equalHTML(element, expectedHTML, message) {
   var html;
@@ -121,7 +125,6 @@ export function equalHTML(element, expectedHTML, message) {
     return tag.toLowerCase();
   });
   actualHTML = actualHTML.replace(/\r\n/gm, '');
-  // TODO: Drop this? Maybe it was just morph
   actualHTML = actualHTML.replace(/ $/, '');
   equal(actualHTML, expectedHTML, message || "HTML matches");
 }

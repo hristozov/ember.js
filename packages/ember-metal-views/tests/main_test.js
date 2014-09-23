@@ -1,4 +1,9 @@
-import { testsFor, setElementText, equalHTML, appendTo } from "ember-metal-views/tests/test_helpers";
+import {
+  testsFor,
+  setElementText,
+  equalHTML,
+  appendTo
+} from "ember-metal-views/tests/test_helpers";
 
 var view;
 

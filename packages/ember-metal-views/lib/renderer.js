@@ -29,10 +29,7 @@ function Renderer_renderTree(_view, _parentView, _insertAt) {
 
   var parentIndex = -1;
   var parents = this._parents;
-  var parent = null;
-  if (_parentView) {
-    parent = _parentView;
-  }
+  var parent = _parentView || null;
   var elements = this._elements;
   var element = null;
   var contextualElement = null;
@@ -135,8 +132,9 @@ Renderer.prototype.uuid = function Renderer_uuid(view) {
 Renderer.prototype.scheduleInsert =
   function Renderer_scheduleInsert(view, morph) {
     if (view._morph || view._elementCreated) {
-      throw new Error("You can't insert a View that has already been rendered");
+      throw new Error("You cannot insert a View that has already been rendered");
     }
+    Ember.assert("You cannot insert a View without a morph", morph);
     view._morph = morph;
     var viewId = this.uuid(view);
     this._inserts[viewId] = this.scheduleRender(this, function scheduledRenderTree() {
@@ -147,13 +145,13 @@ Renderer.prototype.scheduleInsert =
 
 Renderer.prototype.appendTo =
   function Renderer_appendTo(view, target) {
-    var morph = this._dom.appendMorph(target, target);
+    var morph = this._dom.appendMorph(target);
     this.scheduleInsert(view, morph);
   };
 
 Renderer.prototype.replaceIn =
   function Renderer_replaceIn(view, target) {
-    var morph = this._dom.createMorph(target, null, null, target);
+    var morph = this._dom.createMorph(target, null, null);
     this.scheduleInsert(view, morph);
   };
 

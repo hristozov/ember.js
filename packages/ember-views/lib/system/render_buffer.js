@@ -273,7 +273,7 @@ _RenderBuffer.prototype = {
     this.push("<script id='morph-"+index+"' type='text/x-placeholder'>\x3C/script>");
   },
 
-  hydrateMorphs: function () {
+  hydrateMorphs: function (contextualElement) {
     var childViews = this.childViews;
     var el = this._element;
     for (var i=0,l=childViews.length; i<l; i++) {
@@ -281,7 +281,10 @@ _RenderBuffer.prototype = {
       var ref = el.querySelector('#morph-'+i);
       var parent = ref.parentNode;
 
-      childView._morph = this.dom.insertMorphBefore(parent, ref);
+      if (parent.nodeType === 1) {
+        contextualElement = parent;
+      }
+      childView._morph = this.dom.insertMorphBefore(parent, ref, contextualElement);
       parent.removeChild(ref);
     }
   },
@@ -510,17 +513,18 @@ _RenderBuffer.prototype = {
         while (nodes[0]) {
           this._element.appendChild(nodes[0]);
         }
-        this.hydrateMorphs();
+        this.hydrateMorphs(this._element);
       }
     } else {
       if (html) {
         var omittedStartTag = detectOmittedStartTag(html, this._contextualElement);
-        nodes = this.dom.parseHTML(html, omittedStartTag || this._contextualElement);
+        var contextualElement = omittedStartTag || this._contextualElement;
+        nodes = this.dom.parseHTML(html, contextualElement);
         var frag = this._element = document.createDocumentFragment();
         while (nodes[0]) {
           frag.appendChild(nodes[0]);
         }
-        this.hydrateMorphs();
+        this.hydrateMorphs(contextualElement);
       } else if (html === '') {
         this._element = html;
       }
