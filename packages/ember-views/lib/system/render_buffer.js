@@ -281,10 +281,11 @@ _RenderBuffer.prototype = {
       var ref = el.querySelector('#morph-'+i);
       var parent = ref.parentNode;
 
-      if (parent.nodeType === 1) {
-        contextualElement = parent;
-      }
-      childView._morph = this.dom.insertMorphBefore(parent, ref, contextualElement);
+      childView._morph = this.dom.insertMorphBefore(
+        parent,
+        ref,
+        parent.nodeType === 1 ? parent : contextualElement
+      );
       parent.removeChild(ref);
     }
   },
