@@ -24,7 +24,7 @@ function shouldPrint(inputString) {
 function run(queryString) {
   return new RSVP.Promise(function(resolve, reject) {
     var args = [
-      'bower_components/qunit-phantom-runner/runner.js',
+      'bower_components/qunit-phantom-runner/runner-list.js',
       './dist/tests/index.html?' + queryString
     ];
 
