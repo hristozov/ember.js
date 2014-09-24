@@ -15,6 +15,7 @@ after_success:
   - "./bin/publish_to_s3.js"
   - "./bin/bower_ember_build"
 script:
+  - phantomjs --version
   - npm test
   - npm run-script test-node
 
