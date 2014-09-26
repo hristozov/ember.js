@@ -243,6 +243,10 @@ if (MANDATORY_SETTER) { EMPTY_META.values = {}; }
   @return {Object} the meta hash for an object
 */
 function meta(obj, writable) {
+  var agent = window.navigator.userAgent;
+  var mayNeedFix = agent.indexOf('iPhone') > -1 &&
+    agent.indexOf('Version/8.0 Mobile') > -1 &&
+    ({ '__proto__': []} instanceof Array);
 
   var ret = obj[META_KEY];
   if (writable===false) return ret || EMPTY_META;
@@ -262,14 +266,26 @@ function meta(obj, writable) {
   } else if (ret.source !== obj) {
     if (!isDefinePropertySimulated) o_defineProperty(obj, META_KEY, META_DESC);
 
-    ret = o_create(ret);
-    ret.descs     = o_create(ret.descs);
-    ret.watching  = o_create(ret.watching);
-    ret.cache     = {};
-    ret.cacheMeta = {};
-    ret.source    = obj;
+    var newRet;
+    if (mayNeedFix) {
+      newRet = { };
+    } else {
+      newRet = o_create(ret);
 
-    if (MANDATORY_SETTER) { ret.values = o_create(ret.values); }
+    }
+    newRet.descs     = o_create(ret.descs);
+    newRet.watching  = o_create(ret.watching);
+    newRet.cache     = {};
+    newRet.cacheMeta = {};
+    newRet.source    = obj;
+
+    if (MANDATORY_SETTER) { newRet.values = o_create(ret.values); }
+
+    if (mayNeedFix) {
+      newRet['__proto__'] = ret;
+    }
+
+    ret = newRet;
 
     obj[META_KEY] = ret;
   }
