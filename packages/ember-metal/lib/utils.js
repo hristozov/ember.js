@@ -242,11 +242,9 @@ if (MANDATORY_SETTER) { EMPTY_META.values = {}; }
     the meta hash, allowing the method to avoid making an unnecessary copy.
   @return {Object} the meta hash for an object
 */
+var agent = window.navigator.userAgent;
+var mayNeedFix = agent.indexOf('iPhone') > -1 && agent.indexOf('Version/8.0 Mobile');
 function meta(obj, writable) {
-  var agent = window.navigator.userAgent;
-  var mayNeedFix = agent.indexOf('iPhone') > -1 &&
-    agent.indexOf('Version/8.0 Mobile') > -1 &&
-    ({ '__proto__': []} instanceof Array);
 
   var ret = obj[META_KEY];
   if (writable===false) return ret || EMPTY_META;
@@ -282,7 +280,7 @@ function meta(obj, writable) {
     if (MANDATORY_SETTER) { newRet.values = o_create(ret.values); }
 
     if (mayNeedFix) {
-      newRet['__proto__'] = ret;
+      newRet.__proto__ = ret;
     }
 
     ret = newRet;
