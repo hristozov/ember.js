@@ -243,7 +243,7 @@ if (MANDATORY_SETTER) { EMPTY_META.values = {}; }
   @return {Object} the meta hash for an object
 */
 var agent = window.navigator.userAgent;
-var mayNeedFix = agent.indexOf('iPhone') > -1 && agent.indexOf('Version/8.0 Mobile');
+var mayNeedFix = (agent.indexOf('iPhone') > -1 || agent.indexOf('iPad') > -1) && agent.indexOf('Version/8.0 Mobile');
 function meta(obj, writable) {
 
   var ret = obj[META_KEY];
